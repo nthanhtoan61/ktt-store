@@ -1,5 +1,4 @@
 const User = require('../models/User')
-const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer')
 
@@ -41,15 +40,12 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Số điện thoại đã được sử dụng' })
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10)
-
         // Tạo user mới
         const user = await User.create({
             userID: Date.now(),
             fullname,
             email,
-            password: hashedPassword,
+            password, // Không hash password ở đây vì đã có middleware pre save
             phone,
             gender,
             role: 'customer',
@@ -114,7 +110,7 @@ const login = async (req, res) => {
         }
 
         // Kiểm tra mật khẩu
-        const isMatch = await bcrypt.compare(password, user.password)
+        const isMatch = await user.comparePassword(password)
         if (!isMatch) {
             // Tăng số lần đăng nhập sai
             await user.incLoginAttempts()

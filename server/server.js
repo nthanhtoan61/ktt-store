@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const app = express();
 const fs = require('fs');
+
 // Cấu hình môi trường
 dotenv.config();
 
@@ -19,8 +20,14 @@ mongoose
   .then(() => console.log("✅Kết nối đến MongoDB thành công"))
   .catch((err) => console.error("❌Kết nối đến MongoDB thất bại:", err));
 
+// Import routes
+const authRoutes = require('./routes/auth.route');
+
 // Import authentication middleware
 const { authenticateAdmin, authenticateCustomer } = require("./middlewares/auth.middleware");
+
+// Routes
+app.use('/api/auth', authRoutes);
 
 // Khởi động server
 const PORT = process.env.PORT || 5000;
