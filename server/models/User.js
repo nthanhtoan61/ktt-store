@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+// Số lần đăng nhập sai tối đa cho phép
+const MAX_LOGIN_ATTEMPTS = 5;
+
 // Định nghĩa schema cho collection 'users'
 const UserSchema = new mongoose.Schema({
     userID: {
@@ -124,8 +127,8 @@ UserSchema.methods.incLoginAttempts = async function() {
     // Tăng số lần thử
     this.loginAttempts++;
     
-    // Khóa tài khoản nếu thử quá 5 lần
-    if (this.loginAttempts >= 5) {
+    // Khóa tài khoản nếu thử quá MAX_LOGIN_ATTEMPTS lần
+    if (this.loginAttempts >= MAX_LOGIN_ATTEMPTS) {
         this.lockUntil = new Date(Date.now() + 30*60*1000); // Khóa 30 phút
     }
     
