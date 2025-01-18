@@ -38,9 +38,27 @@ const Login = () => {
 
       // Lưu token
       localStorage.setItem('customerToken', response.data.token)
+<<<<<<< HEAD
+=======
+      
+      // Lưu token và thông tin user
+      const { token, user } = response.data
+      localStorage.setItem('token', token)
+      localStorage.setItem('role', user.role)
+      
+      localStorage.setItem('customerInfo', JSON.stringify(user))
+      // Dispatch event để thông báo thay đổi auth
+      window.dispatchEvent(new Event('authChange'))
+>>>>>>> c45583f (15:28:43 update product ctrl, route, login)
       
       toast.success('Đăng nhập thành công!')
-      navigate('/')
+
+      // Kiểm tra role và chuyển hướng
+      if (user.role === 'admin') {
+        navigate('/admin/products')
+      } else {
+        navigate('/')
+      }
     } catch (error) {
       if (error.response) {
         toast.error(error.response.data.message)
